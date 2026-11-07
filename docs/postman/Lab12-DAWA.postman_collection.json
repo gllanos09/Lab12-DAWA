@@ -1,0 +1,227 @@
+{
+  "info": {
+    "name": "Lab12-DAWA - Biblioteca",
+    "description": "Pruebas de las API Routes del Laboratorio 12 (DAWA).\n\nCÓMO USARLA\n1. Levanta la aplicación con `npm run dev` (debe quedar en http://localhost:3000).\n2. Ejecuta las peticiones EN ORDEN, de la 1 a la 10.\n3. Captura cada respuesta.\n\nNo hace falta copiar ningún ID a mano: las peticiones 2 y 8 guardan el id que devuelve el servidor en las variables `gaboId` y `bookId`, y las siguientes lo reutilizan.\n\nSi la petición 2 devuelve 409 es porque el autor ya existe de una ejecución anterior: cambia el email del cuerpo o bórralo antes de repetir.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "authorId", "value": "cmw6mpdee0000sbdka0rteh7k" },
+    { "key": "gaboId", "value": "" },
+    { "key": "bookId", "value": "" },
+    { "key": "deleteBookId", "value": "cmw6mphnm0008sbdk97xnruhj" }
+  ],
+  "item": [
+    {
+      "name": "1. GET Todos los autores",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/authors", "host": ["{{baseUrl}}"], "path": ["api", "authors"] },
+        "description": "Ejercicio 1. Devuelve todos los autores con sus libros y el conteo, ordenados por nombre."
+      },
+      "response": []
+    },
+    {
+      "name": "2. POST Crear autor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Guarda el id del autor recién creado para las peticiones 5 y 8.",
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set('gaboId', pm.response.json().id);",
+              "}",
+              "pm.test('201 Created', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Gabriel García Márquez\",\n  \"email\": \"gabo@example.com\",\n  \"nationality\": \"Colombia\",\n  \"birthYear\": 1927,\n  \"bio\": \"Premio Nobel de Literatura 1982\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/api/authors", "host": ["{{baseUrl}}"], "path": ["api", "authors"] },
+        "description": "Ejercicio 1. Crea un autor. Valida que nombre y email estén presentes y que el email tenga formato válido; si el email ya existe responde 409."
+      },
+      "response": []
+    },
+    {
+      "name": "3. GET Autor por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/authors/{{authorId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "authors", "{{authorId}}"]
+        },
+        "description": "Ejercicio 2. Un autor con sus libros ordenados por año de publicación descendente. Si el id no existe responde 404."
+      },
+      "response": []
+    },
+    {
+      "name": "4. GET Libros de un autor",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/authors/{{authorId}}/books",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "authors", "{{authorId}}", "books"]
+        },
+        "description": "Ejercicio 3. Verifica primero que el autor exista y luego devuelve sus libros junto al total."
+      },
+      "response": []
+    },
+    {
+      "name": "5. PUT Actualizar autor",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Gabriel García Márquez\",\n  \"bio\": \"Autor de Cien años de soledad\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/authors/{{gaboId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "authors", "{{gaboId}}"]
+        },
+        "description": "Ejercicio 2. Actualiza el autor creado en la petición 2. Traduce P2025 a 404 y P2002 a 409."
+      },
+      "response": []
+    },
+    {
+      "name": "6. GET Todos los libros",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/books", "host": ["{{baseUrl}}"], "path": ["api", "books"] },
+        "description": "Ejercicio 4. Todos los libros con los datos básicos de su autor."
+      },
+      "response": []
+    },
+    {
+      "name": "7. GET Libros filtrados por género",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books?genre=Novela",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books"],
+          "query": [{ "key": "genre", "value": "Novela" }]
+        },
+        "description": "Ejercicio 4. El mismo endpoint admite los filtros opcionales genre y authorId."
+      },
+      "response": []
+    },
+    {
+      "name": "8. POST Crear libro",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Guarda el id del libro recién creado para la petición 9.",
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set('bookId', pm.response.json().id);",
+              "}",
+              "pm.test('201 Created', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"description\": \"Obra maestra del realismo mágico\",\n  \"isbn\": \"978-0307474728\",\n  \"publishedYear\": 1967,\n  \"genre\": \"Novela\",\n  \"pages\": 417,\n  \"authorId\": \"{{gaboId}}\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/api/books", "host": ["{{baseUrl}}"], "path": ["api", "books"] },
+        "description": "Ejercicio 4. Crea un libro para el autor de la petición 2. Valida título (mínimo 3 caracteres), páginas mayores que 0 y que el autor exista."
+      },
+      "response": []
+    },
+    {
+      "name": "9. GET Libro por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "{{bookId}}"]
+        },
+        "description": "Ejercicio 5. El libro creado en la petición 8, con su autor completo."
+      },
+      "response": []
+    },
+    {
+      "name": "10. DELETE Eliminar libro",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/{{deleteBookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "{{deleteBookId}}"]
+        },
+        "description": "Ejercicio 5. Elimina el libro «Los cachorros». Si se repite la petición responde 404, porque Prisma lanza P2025."
+      },
+      "response": []
+    },
+    {
+      "name": "TAREA",
+      "item": [
+        {
+          "name": "11. GET Búsqueda con filtros y paginación",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/books/search?search=amor&genre=Novela&page=1&limit=10&sortBy=publishedYear&order=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "books", "search"],
+              "query": [
+                { "key": "search", "value": "amor" },
+                { "key": "genre", "value": "Novela" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "sortBy", "value": "publishedYear" },
+                { "key": "order", "value": "desc" }
+              ]
+            },
+            "description": "Tarea, requerimiento 1. Devuelve { data, pagination }. search y authorName son parciales y no distinguen mayúsculas; genre es exacto; limit está limitado a 50 y sortBy solo acepta title, publishedYear o createdAt."
+          },
+          "response": []
+        },
+        {
+          "name": "12. GET Estadísticas del autor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/authors/{{authorId}}/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "authors", "{{authorId}}", "stats"]
+            },
+            "description": "Tarea, requerimiento 2. Total de libros, primer y último libro, promedio de páginas, géneros únicos, y libro más largo y más corto."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
