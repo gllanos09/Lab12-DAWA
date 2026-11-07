@@ -59,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto max-w-6xl px-4 py-5 text-sm text-slate-500">
-            Lab12-DAWA · API&apos;s Integradas · Arévalo Sermeño, Edwin William
+            Lab12-DAWA · API&apos;s Integradas · Llanos Pacheco, Ángel Gabriel
           </div>
         </footer>
       </body>

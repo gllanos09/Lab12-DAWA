@@ -2,7 +2,7 @@
 
 Laboratorio 12 del curso **Desarrollo de Aplicaciones Web Avanzado** (5 - C24, Sección A-B).
 
-**Alumno:** Arévalo Sermeño, Edwin William
+**Alumno:** Llanos Pacheco, Ángel Gabriel
 
 Sistema de biblioteca construido con **API Routes de Next.js**, **Prisma ORM** y
 **PostgreSQL en Supabase**. Incluye los 5 ejercicios del laboratorio y los
