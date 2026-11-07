@@ -64,7 +64,16 @@ export async function PUT(request: Request, { params }: RouteContext) {
         email,
         bio,
         nationality,
-        birthYear: birthYear ? parseInt(birthYear) : null,
+        // Si el cuerpo no trae birthYear se deja `undefined`, que Prisma
+        // ignora, en lugar de `null`: con `null` una actualización parcial
+        // (por ejemplo enviar solo name y bio) borraba el año que ya estaba
+        // guardado. Enviar birthYear vacío sí lo limpia, que es lo esperable.
+        birthYear:
+          birthYear === undefined
+            ? undefined
+            : birthYear
+              ? parseInt(birthYear)
+              : null,
       },
       include: {
         books: true,
